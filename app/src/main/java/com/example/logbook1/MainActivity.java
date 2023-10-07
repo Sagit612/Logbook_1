@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static final String COMMA_SIGN = ",";
     static final String PERCENTAGE_SIGN = "%";
 
-    static final String DIVIDE_BY_ZERO_ERROR = "ERROR";
+    static final String DIVIDE_BY_ZERO_ERROR = "NOT A NUMBER";
     private boolean calculationPerformed = false;
 
     String currentNum;
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         result = 0.0;
         resultDisplay.setText(currentNum);
         calculationDisplay.setText(currentNum);
+        enableAllButtons();
 //        updateCalculationDisplay();
 //        setActiveOperatorButton(null);
     }
@@ -197,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void calculateResult() {
-        if (!currentNum.equals("0")) {
+        if (!currentNum.equals("0") && !operator.equals(DIVIDE_SIGN)) {
             updateCalculationDisplay();
             currentNum = currentNum.replaceAll("[^0-9.+-]", "");
             double firstOperant = Double.parseDouble(previousNum);
@@ -213,19 +215,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     result = firstOperant * secondOperand;
                     break;
                 case DIVIDE_SIGN:
-                    if (secondOperand != 0) {
-                        result = firstOperant / secondOperand;
-                    } else {
-                        // Handle division by zero error
-                        // ...
-                        currentNum = DIVIDE_BY_ZERO_ERROR;
-                        previousNum = DIVIDE_BY_ZERO_ERROR;
-                        operator = "";
-                        result = 0.0;
-                        resultDisplay.setText(currentNum);
-                        updateCalculationDisplay();
-                        return;
-                    }
+//                    if (secondOperand != 0) {
+//                        result = firstOperant / secondOperand;
+//                    } else {
+//                        // Handle division by zero error
+//                        // ...
+//                        currentNum = DIVIDE_BY_ZERO_ERROR;
+//                        previousNum = DIVIDE_BY_ZERO_ERROR;
+//                        operator = "";
+//                        result = 0.0;
+//                        resultDisplay.setText(currentNum);
+////                        updateCalculationDisplay();
+//                        return;
+//                    }
+                    result = firstOperant / secondOperand;
                     break;
             }
             calculationPerformed = true;
@@ -240,7 +243,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 currentNum = String.valueOf(result);
             }
             resultDisplay.setText(currentNum);
+        } else {
+            // Handle division by zero error
+            // ...
             updateCalculationDisplay();
+            currentNum = DIVIDE_BY_ZERO_ERROR;
+            previousNum = DIVIDE_BY_ZERO_ERROR;
+            operator = "";
+            result = 0.0;
+            resultDisplay.setText(currentNum);
+            disableAllButtonsExceptAC();
+        }
+    }
+    private void disableAllButtonsExceptAC() {
+        LinearLayout parentLayout = findViewById(R.id.buttonsLayout); // Replace with your actual layout ID
+
+        for (int i = 0; i < parentLayout.getChildCount(); i++) {
+            LinearLayout childLayout = (LinearLayout) parentLayout.getChildAt(i);
+            for (int j = 0; j < childLayout.getChildCount(); j++) {
+                Button button = (Button) childLayout.getChildAt(j);
+                if (button.getId() != R.id.btnClear) { // Exclude AC button
+                    button.setEnabled(false);
+                }
+            }
+        }
+    }
+    private void enableAllButtons() {
+        LinearLayout parentLayout = findViewById(R.id.buttonsLayout); // Replace with your actual layout ID
+
+        for (int i = 0; i < parentLayout.getChildCount(); i++) {
+            LinearLayout childLayout = (LinearLayout) parentLayout.getChildAt(i);
+            for (int j = 0; j < childLayout.getChildCount(); j++) {
+                Button button = (Button) childLayout.getChildAt(j);
+                if (button.getId() != R.id.btnClear) { // Exclude AC button
+                    button.setEnabled(true);
+                }
+            }
         }
     }
 }
