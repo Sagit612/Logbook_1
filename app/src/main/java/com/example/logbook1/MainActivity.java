@@ -1,5 +1,6 @@
 package com.example.logbook1;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -36,14 +37,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button button1, button2, button3, button4, button5, button6, button7, button8, button9, button0;
     Button buttonClear, buttonChangeSign, buttonPercentage, buttonComma;
     Button buttonAdd, buttonSubstract, buttonMutiply, buttonDivide, buttonEqual;
-    Button pressedButton;
+    private Button activeOperatorButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        currentNum = "";
+        currentNum = "0";
         previousNum = "";
         operator = "";
         calculationDisplay = findViewById(R.id.calculationDisplay);
@@ -115,13 +116,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateCalculationDisplay();
     }
     private void clear() {
-        pressedButton = null;
-        currentNum = "";
+        activeOperatorButton = null;
+        currentNum = "0";
         previousNum = "";
         operator = "";
         result = 0.0;
         resultDisplay.setText("0");
         calculationDisplay.setText("0");
+//        setActiveOperatorButton(null);
     }
     private void changeSign() {
         if (!currentNum.isEmpty()) {
@@ -151,33 +153,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     private void setOperator(Button btn) {
-        if (!operator.isEmpty()) {
-            calculateResult();
-        }
-        operator = btn.getText().toString();
-        calculationPerformed = false;
-        if (!currentNum.isEmpty()) {
-            previousNum = currentNum;
-            currentNum = "";
-//            updateButtonState(btn.getId());
-        }
-        updateCalculationDisplay();
+            if (!operator.isEmpty()) {
+                calculateResult();
+            }
+            operator = btn.getText().toString();
+            calculationPerformed = false;
+            if (!currentNum.isEmpty()) {
+                previousNum = currentNum;
+                currentNum = "";
+            }
+//        setActiveOperatorButton(btn);
+            updateCalculationDisplay();
     }
-//    private void updateButtonState(int id) {
-//        Button clickedButton = findViewById(id); // Replace with your actual button ID
-//
-//        if (pressedButton != null) {
-//            pressedButton.getBackground().clearColorFilter();
-////            pressedButton.setPressed(false); // Un-press the previously pressed button
-//            pressedButton.setEnabled(true); // Enable the previously pressed button
-//        }
-//
-//        pressedButton = clickedButton; // Update the pressed button
-////        pressedButton.setPressed(true); // Press the newly clicked button
-//        pressedButton.setEnabled(false);
-//        pressedButton.setBackgroundColor(Color.GRAY);
-//
-//    }
+    private void setActiveOperatorButton(@Nullable Button button) {
+        if (activeOperatorButton != null) {
+            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.orange)); // Change back to the original background resource
+        } else {
+            activeOperatorButton = button;
+            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.grey));
+        }
+         // Set a background resource to indicate active state
+    }
 
     private void updateCalculationDisplay() {
         if (currentNum.equals("Error") && previousNum.equals("Error")) {
