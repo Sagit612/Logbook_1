@@ -97,7 +97,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 addDecimal();
                 break;
             case EQUAL_SIGN:
-                calculateResult();
+                if (!previousNum.equals("") && !operator.equals("")){
+                    calculateResult();
+                }
             default:
                 if (btnText.matches("[-+*/]")) {
                     setOperator(btn);
@@ -111,18 +113,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clear();
             calculationPerformed = false;
         }
+        if (currentNum.equals("0") && previousNum.equals("") && operator.equals("")) {
+            currentNum = "";
+        }
         currentNum += number;
         resultDisplay.setText(currentNum);
         updateCalculationDisplay();
     }
     private void clear() {
-        activeOperatorButton = null;
+//        activeOperatorButton = null;
         currentNum = "0";
         previousNum = "";
         operator = "";
         result = 0.0;
-        resultDisplay.setText("0");
-        calculationDisplay.setText("0");
+        resultDisplay.setText(currentNum);
+        calculationDisplay.setText(currentNum);
+//        updateCalculationDisplay();
 //        setActiveOperatorButton(null);
     }
     private void changeSign() {
@@ -143,10 +149,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             double percentage = number / 100;
             currentNum = String.valueOf(percentage);
             resultDisplay.setText(currentNum);
+            updateCalculationDisplay();
         }
     }
 
     private void addDecimal() {
+        if (currentNum.equals("")) {
+            currentNum = "0";
+        }
         if (!currentNum.contains(".")) {
             currentNum += ".";
             resultDisplay.setText(currentNum);
@@ -165,15 +175,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        setActiveOperatorButton(btn);
             updateCalculationDisplay();
     }
-    private void setActiveOperatorButton(@Nullable Button button) {
-        if (activeOperatorButton != null) {
-            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.orange)); // Change back to the original background resource
-        } else {
-            activeOperatorButton = button;
-            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.grey));
-        }
-         // Set a background resource to indicate active state
-    }
+//    private void setActiveOperatorButton(Button button) {
+//        if (activeOperatorButton != null) {
+//            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.orange)); // Change back to the original background resource
+//        } else {
+//            activeOperatorButton = button;
+//            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.grey));
+//        }
+//         // Set a background resource to indicate active state
+//    }
 
     private void updateCalculationDisplay() {
         if (currentNum.equals("Error") && previousNum.equals("Error")) {
@@ -187,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void calculateResult() {
-        if (!currentNum.isEmpty()) {
+        if (!currentNum.equals("0")) {
             updateCalculationDisplay();
             currentNum = currentNum.replaceAll("[^0-9.+-]", "");
             double firstOperant = Double.parseDouble(previousNum);
@@ -219,15 +229,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
             }
             calculationPerformed = true;
+            operator = "";
+            previousNum = "";
             if (result % 1 == 0) {
                 // If it's an integer, convert it to an integer
                 int integerResult = result.intValue();
                 currentNum = String.valueOf(integerResult);
             } else {
-                result = Math.round(result * 1000000) / 1000000.0;
+                result = Math.round(result * 100000) / 100000.0;
                 currentNum = String.valueOf(result);
             }
             resultDisplay.setText(currentNum);
+            updateCalculationDisplay();
         }
     }
 }
