@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void calculateResult() {
-        if (!currentNum.equals("0") && !operator.equals(DIVIDE_SIGN)) {
+        if (!currentNum.equals("0") && operator.equals(DIVIDE_SIGN)) {
             updateCalculationDisplay();
             currentNum = currentNum.replaceAll("[^0-9.+-]", "");
             double firstOperant = Double.parseDouble(previousNum);
