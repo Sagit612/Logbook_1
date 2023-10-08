@@ -199,7 +199,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void calculateResult() {
-        if (!currentNum.equals("0") && operator.equals(DIVIDE_SIGN)) {
+        if (currentNum.equals("0") && operator.equals(DIVIDE_SIGN)){
+            // Handle division by zero error
+            // ...
+            updateCalculationDisplay();
+            currentNum = DIVIDE_BY_ZERO_ERROR;
+            previousNum = DIVIDE_BY_ZERO_ERROR;
+            operator = "";
+            result = 0.0;
+            resultDisplay.setText(currentNum);
+            disableAllButtonsExceptAC();
+        } else {
             updateCalculationDisplay();
             currentNum = currentNum.replaceAll("[^0-9.+-]", "");
             double firstOperant = Double.parseDouble(previousNum);
@@ -243,16 +253,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 currentNum = String.valueOf(result);
             }
             resultDisplay.setText(currentNum);
-        } else {
-            // Handle division by zero error
-            // ...
-            updateCalculationDisplay();
-            currentNum = DIVIDE_BY_ZERO_ERROR;
-            previousNum = DIVIDE_BY_ZERO_ERROR;
-            operator = "";
-            result = 0.0;
-            resultDisplay.setText(currentNum);
-            disableAllButtonsExceptAC();
         }
     }
     private void disableAllButtonsExceptAC() {
