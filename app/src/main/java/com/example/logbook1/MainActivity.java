@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!previousNum.equals("") && !operator.equals("")){
                     calculateResult();
                 }
+                break;
             default:
                 if (btnText.matches("[-+*/]")) {
                     setOperator(btn);
@@ -165,28 +166,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     private void setOperator(Button btn) {
-            if (!operator.isEmpty()) {
+            if (!operator.isEmpty() && !currentNum.isEmpty() && !previousNum.isEmpty()) {
                 calculateResult();
             }
-            operator = btn.getText().toString();
             calculationPerformed = false;
             if (!currentNum.isEmpty()) {
+                operator = btn.getText().toString();
                 previousNum = currentNum;
                 currentNum = "";
+            } else {
+                operator = btn.getText().toString();
             }
-//        setActiveOperatorButton(btn);
             updateCalculationDisplay();
     }
-//    private void setActiveOperatorButton(Button button) {
-//        if (activeOperatorButton != null) {
-//            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.orange)); // Change back to the original background resource
-//        } else {
-//            activeOperatorButton = button;
-//            activeOperatorButton.setBackgroundColor(getResources().getColor(R.color.grey));
-//        }
-//         // Set a background resource to indicate active state
-//    }
-
     private void updateCalculationDisplay() {
         if (currentNum.equals("Error") && previousNum.equals("Error")) {
             calculationDisplay.setText("Error");
@@ -225,19 +217,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     result = firstOperant * secondOperand;
                     break;
                 case DIVIDE_SIGN:
-//                    if (secondOperand != 0) {
-//                        result = firstOperant / secondOperand;
-//                    } else {
-//                        // Handle division by zero error
-//                        // ...
-//                        currentNum = DIVIDE_BY_ZERO_ERROR;
-//                        previousNum = DIVIDE_BY_ZERO_ERROR;
-//                        operator = "";
-//                        result = 0.0;
-//                        resultDisplay.setText(currentNum);
-////                        updateCalculationDisplay();
-//                        return;
-//                    }
                     result = firstOperant / secondOperand;
                     break;
             }
